@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-import "../src/Wrappy.sol";
+import "../../src/Wrappy.sol";
 
-contract MockWrappyImpl is Wrappy {
+contract WrappyImpl is Wrappy {
     constructor() {}
 
     function wrapped(uint256 tokenId) public view returns (bool) {

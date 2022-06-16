@@ -2,13 +2,13 @@
 pragma solidity ^0.8.13;
 
 import "forge-std/Test.sol";
-import "./MockWrappyImpl.sol";
+import "./mocks/WrappyImpl.sol";
 
 contract WrappableTest is Test {
-    MockWrappyImpl presents;
+    WrappyImpl presents;
 
     function setUp() public {
-        presents = new MockWrappyImpl();
+        presents = new WrappyImpl();
     }
 
     function testAllWrapped(uint256 tokenId) public {
