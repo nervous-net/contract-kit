@@ -10,6 +10,10 @@ contract WalletMintLimitImpl is WalletMintLimit {
         _setWalletMintLimit(limit);
     }
 
+    function walletMintLimit() external returns (uint256) {
+        return _walletMintLimit;
+    }
+
     function mockMint(address wallet, uint256 num)
         public
         limitWalletMints(wallet, num)
