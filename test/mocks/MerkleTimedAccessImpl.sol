@@ -14,14 +14,14 @@ contract MerkleTimedAccessImpl is MerkleTimedAccess {
         return _merkleAccessLists[index];
     }
 
-    function addMerkleAccessList(bytes32 root, uint32 startTime) external {
+    function addMerkleAccessList(bytes32 root, uint256 startTime) external {
         _addMerkleAccessList(root, startTime);
     }
 
     function updateMerkleAccessList(
         uint256 index,
         bytes32 root,
-        uint32 startTime
+        uint256 startTime
     ) external {
         _updateMerkleAccessList(index, root, startTime);
     }

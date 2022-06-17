@@ -6,21 +6,24 @@ import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 contract MerkleTimedAccess {
     error AccessDenied();
 
+    event AddAccessList(uint256 index);
+
     struct AccessList {
         bytes32 root;
-        uint32 startTime;
+        uint256 startTime;
     }
 
     AccessList[] internal _merkleAccessLists;
 
-    function _addMerkleAccessList(bytes32 root, uint32 startTime) internal {
+    function _addMerkleAccessList(bytes32 root, uint256 startTime) internal {
         _merkleAccessLists.push(AccessList(root, startTime));
+        emit AddAccessList(_merkleAccessLists.length - 1);
     }
 
     function _updateMerkleAccessList(
         uint256 index,
         bytes32 root,
-        uint32 startTime
+        uint256 startTime
     ) internal {
         require(index < _merkleAccessLists.length, "Out of bounds");
         _merkleAccessLists[index].root = root;
