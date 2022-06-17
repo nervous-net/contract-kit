@@ -10,7 +10,7 @@ contract WalletMintLimitImpl is WalletMintLimit {
         _setWalletMintLimit(limit);
     }
 
-    function walletMintLimit() external returns (uint256) {
+    function walletMintLimit() external view returns (uint256) {
         return _walletMintLimit;
     }
 
