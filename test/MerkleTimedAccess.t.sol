@@ -49,8 +49,18 @@ contract WrappableTest is Test {
         assertTrue(impl.checkMerkleAccessList(SAMPLE_ADDR, SAMPLE_PROOF));
     }
 
+    function testAddAndVerifyWithModifier() public {
+        impl.addMerkleAccessList(SAMPLE_ROOT, 0);
+        impl.useModifier(SAMPLE_ADDR, SAMPLE_PROOF);
+    }
+
     function testFalseVerify() public {
         assertFalse(impl.checkMerkleAccessList(SAMPLE_ADDR, SAMPLE_PROOF));
+    }
+
+    function testFalseVerifyWithModifier() public {
+        vm.expectRevert(abi.encodeWithSignature("AccessDenied()"));
+        impl.useModifier(SAMPLE_ADDR, SAMPLE_PROOF);
     }
 
     function testAddFutureFailedVerify() public {

@@ -33,4 +33,10 @@ contract MerkleTimedAccessImpl is MerkleTimedAccess {
     {
         return _checkMerkleAccessList(addr, proof);
     }
+
+    function useModifier(address addr, bytes32[] calldata proof)
+        external
+        view
+        requireMerkleProof(addr, proof)
+    {}
 }

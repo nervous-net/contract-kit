@@ -4,6 +4,8 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 
 contract MerkleTimedAccess {
+    error AccessDenied();
+
     struct AccessList {
         bytes32 root;
         uint32 startTime;
@@ -44,5 +46,12 @@ contract MerkleTimedAccess {
             }
         }
         return false;
+    }
+
+    modifier requireMerkleProof(address addr, bytes32[] calldata proof) {
+        if (!_checkMerkleAccessList(addr, proof)) {
+            revert AccessDenied();
+        }
+        _;
     }
 }
