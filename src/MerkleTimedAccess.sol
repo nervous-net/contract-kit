@@ -50,11 +50,4 @@ contract MerkleTimedAccess {
         }
         return false;
     }
-
-    modifier requireMerkleProof(address addr, bytes32[] calldata proof) {
-        if (!_checkMerkleAccessList(addr, proof)) {
-            revert AccessDenied();
-        }
-        _;
-    }
 }
