@@ -6,7 +6,6 @@ import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
 contract SignedPassTimedAccess {
     using ECDSA for bytes32;
-    error AccessDenied();
 
     event AddTimedSigner(uint256);
     event UpdateTimedSigner(uint256);

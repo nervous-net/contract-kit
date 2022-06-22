@@ -5,8 +5,6 @@ pragma experimental ABIEncoderV2;
 import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 
 contract MerkleTimedAccess {
-    error AccessDenied();
-
     event AddMerkleAccessList(uint256 index);
     event UpdateMerkleAccessList(uint256 index);
 
