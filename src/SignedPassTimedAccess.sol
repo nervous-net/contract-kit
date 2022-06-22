@@ -3,6 +3,7 @@ pragma solidity ^0.8.0;
 pragma experimental ABIEncoderV2;
 
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+import "./SignedPass.sol";
 
 contract SignedPassTimedAccess {
     using ECDSA for bytes32;
@@ -38,7 +39,7 @@ contract SignedPassTimedAccess {
         address addr,
         bytes memory signedMessage
     ) internal view returns (bool) {
-        address signer = _recoverSignerFromSignedPass(
+        address signer = SignedPass.recoverSignerFromSignedPass(
             prefix,
             addr,
             signedMessage
@@ -50,30 +51,5 @@ contract SignedPassTimedAccess {
             }
         }
         return false;
-    }
-
-    function _recoverSignerFromSignedPass(
-        string memory prefix,
-        address addr,
-        bytes memory signedMessage
-    ) private pure returns (address) {
-        bytes32 message = _getHash(prefix, addr);
-        return _recover(message, signedMessage);
-    }
-
-    function _getHash(string memory prefix, address addr)
-        private
-        pure
-        returns (bytes32)
-    {
-        return keccak256(abi.encodePacked(prefix, addr));
-    }
-
-    function _recover(bytes32 hash, bytes memory signedMessage)
-        private
-        pure
-        returns (address)
-    {
-        return hash.toEthSignedMessageHash().recover(signedMessage);
     }
 }

@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 pragma experimental ABIEncoderV2;
 
-import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
+import "./MerkleUtil.sol";
 
 contract MerkleTimedAccess {
     event AddMerkleAccessList(uint256 index);
@@ -40,11 +40,7 @@ contract MerkleTimedAccess {
             AccessList storage a = _merkleAccessLists[i];
             if (
                 block.timestamp >= a.startTime &&
-                MerkleProof.verify(
-                    proof,
-                    a.root,
-                    keccak256(abi.encodePacked(addr))
-                )
+                MerkleUtil.verifyAddressProof(addr, a.root, proof)
             ) {
                 return true;
             }
