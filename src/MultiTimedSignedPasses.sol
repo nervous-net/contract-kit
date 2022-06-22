@@ -5,11 +5,8 @@ pragma experimental ABIEncoderV2;
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "./SignedPass.sol";
 
-contract SignedPassTimedAccess {
+contract MultiTimedSignedPasses {
     using ECDSA for bytes32;
-
-    event AddTimedSigner(uint256);
-    event UpdateTimedSigner(uint256);
 
     struct TimedSigner {
         address signer;
@@ -18,12 +15,13 @@ contract SignedPassTimedAccess {
 
     TimedSigner[] internal _timedSigners;
 
-    function _addTimedSigner(address signer, uint256 startTime) internal {
-        _timedSigners.push(TimedSigner(signer, startTime));
-        emit AddTimedSigner(_timedSigners.length - 1);
+    constructor(uint256 numSigners) {
+        for (uint256 i = 0; i < numSigners; i++) {
+            _timedSigners.push(TimedSigner(address(0), type(uint256).max));
+        }
     }
 
-    function _updateTimedSigner(
+    function _setTimedSigner(
         uint256 index,
         address signer,
         uint256 startTime
@@ -31,7 +29,6 @@ contract SignedPassTimedAccess {
         require(index < _timedSigners.length, "Out of bounds");
         _timedSigners[index].signer = signer;
         _timedSigners[index].startTime = startTime;
-        emit UpdateTimedSigner(index);
     }
 
     function _checkTimedSigners(
@@ -44,6 +41,9 @@ contract SignedPassTimedAccess {
             addr,
             signedMessage
         );
+        if (signer == address(0)) {
+            return false;
+        }
         for (uint256 i = 0; i < _timedSigners.length; i++) {
             TimedSigner storage a = _timedSigners[i];
             if (a.signer == signer && block.timestamp >= a.startTime) {

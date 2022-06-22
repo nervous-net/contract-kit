@@ -2,10 +2,10 @@
 pragma solidity ^0.8.13;
 pragma experimental ABIEncoderV2;
 
-import "../../src/SignedPassTimedAccess.sol";
+import "../../src/MultiTimedSignedPasses.sol";
 
-contract SignedPassTimedAccessImpl is SignedPassTimedAccess {
-    constructor() {}
+contract MultiTimedSignedPassesImpl is MultiTimedSignedPasses {
+    constructor(uint256 numSigners) MultiTimedSignedPasses(numSigners) {}
 
     function timedSigners(uint256 index)
         external
@@ -15,16 +15,12 @@ contract SignedPassTimedAccessImpl is SignedPassTimedAccess {
         return _timedSigners[index];
     }
 
-    function addTimedSigner(address signer, uint256 startTime) external {
-        _addTimedSigner(signer, startTime);
-    }
-
-    function updateTimedSigner(
+    function setTimedSigner(
         uint256 index,
         address signer,
         uint256 startTime
     ) external {
-        _updateTimedSigner(index, signer, startTime);
+        _setTimedSigner(index, signer, startTime);
     }
 
     function checkTimedSigners(

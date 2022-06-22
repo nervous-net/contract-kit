@@ -2,10 +2,10 @@
 pragma solidity ^0.8.13;
 
 import "forge-std/Test.sol";
-import "./mocks/MerkleTimedAccessImpl.sol";
+import "./mocks/MultiTimedMerkleRootImpl.sol";
 
 contract WrappableTest is Test {
-    MerkleTimedAccessImpl impl;
+    MultiTimedMerkleRootImpl impl;
     bytes32 MOCK_ROOT = bytes32(bytes("hello"));
 
     bytes32 SAMPLE_ROOT_1 =
@@ -38,79 +38,68 @@ contract WrappableTest is Test {
             2
         ] = 0x19ab5000d741e94ab1dee2000f9ae27a768293f3ef786dcab3477ff4288e0917;
 
-        impl = new MerkleTimedAccessImpl();
+        impl = new MultiTimedMerkleRootImpl(2);
     }
 
-    event AddMerkleAccessList(uint256 index);
-
-    function testAdd() public {
-        vm.expectEmit(false, false, false, true);
-        emit AddMerkleAccessList(0);
-        impl.addMerkleAccessList(MOCK_ROOT, 0);
+    function testFailSetOutOfBounds() public {
+        impl.setTimedMerkleRoot(2, MOCK_ROOT, 0);
     }
 
-    function testFailUpdate() public {
-        impl.updateMerkleAccessList(0, MOCK_ROOT, 0);
-    }
-
-    function testRevertUpdate() public {
+    function testRevertSet() public {
         vm.expectRevert("Out of bounds");
-        impl.updateMerkleAccessList(0, MOCK_ROOT, 0);
+        impl.setTimedMerkleRoot(2, MOCK_ROOT, 0);
     }
 
-    event UpdateMerkleAccessList(uint256 index);
+    event SetTimedMerkleRoot(uint256 index);
 
-    function testAddAndUpdateList() public {
-        impl.addMerkleAccessList(MOCK_ROOT, 0);
-        vm.expectEmit(false, false, false, true);
-        emit UpdateMerkleAccessList(0);
-        impl.updateMerkleAccessList(0, MOCK_ROOT, 1);
-        assertEq(impl.merkleAccessLists(0).startTime, 1);
+    function testSetList() public {
+        impl.setTimedMerkleRoot(0, MOCK_ROOT, 1);
+        assertEq(impl.timedMerkleRoots(0).startTime, 1);
     }
 
-    function testAddAndVerify() public {
-        impl.addMerkleAccessList(SAMPLE_ROOT_1, 0);
-        assertTrue(impl.checkMerkleAccessList(SAMPLE_ADDR_1, SAMPLE_PROOF_1));
+    function testSetAndVerify() public {
+        impl.setTimedMerkleRoot(0, SAMPLE_ROOT_1, 0);
+        assertTrue(impl.checkTimedMerkleRoots(SAMPLE_ADDR_1, SAMPLE_PROOF_1));
     }
 
-    function testAddAndVerify2() public {
-        impl.addMerkleAccessList(SAMPLE_ROOT_2, 0);
-        assertTrue(impl.checkMerkleAccessList(SAMPLE_ADDR_2, SAMPLE_PROOF_2));
+    function testSetAndVerify2() public {
+        impl.setTimedMerkleRoot(0, SAMPLE_ROOT_2, 0);
+        assertTrue(impl.checkTimedMerkleRoots(SAMPLE_ADDR_2, SAMPLE_PROOF_2));
     }
 
     function testFalseVerify() public {
-        assertFalse(impl.checkMerkleAccessList(SAMPLE_ADDR_1, SAMPLE_PROOF_1));
+        assertFalse(impl.checkTimedMerkleRoots(SAMPLE_ADDR_1, SAMPLE_PROOF_1));
     }
 
     function testAddFutureFailedVerify() public {
-        impl.addMerkleAccessList(SAMPLE_ROOT_1, uint32(block.timestamp) + 10);
-        assertFalse(impl.checkMerkleAccessList(SAMPLE_ADDR_1, SAMPLE_PROOF_1));
+        impl.setTimedMerkleRoot(0, SAMPLE_ROOT_1, uint32(block.timestamp) + 10);
+        assertFalse(impl.checkTimedMerkleRoots(SAMPLE_ADDR_1, SAMPLE_PROOF_1));
     }
 
     function testFuture() public {
         uint32 futureTimestamp = uint32(block.timestamp) + 100;
-        impl.addMerkleAccessList(SAMPLE_ROOT_1, futureTimestamp);
-        assertFalse(impl.checkMerkleAccessList(SAMPLE_ADDR_1, SAMPLE_PROOF_1));
+        impl.setTimedMerkleRoot(0, SAMPLE_ROOT_1, futureTimestamp);
+        assertFalse(impl.checkTimedMerkleRoots(SAMPLE_ADDR_1, SAMPLE_PROOF_1));
         vm.warp(futureTimestamp + 10);
-        assertTrue(impl.checkMerkleAccessList(SAMPLE_ADDR_1, SAMPLE_PROOF_1));
+        assertTrue(impl.checkTimedMerkleRoots(SAMPLE_ADDR_1, SAMPLE_PROOF_1));
     }
 
     function testMultipleListsOverTime() public {
         uint256 accessListTime1 = block.timestamp + 100;
         uint256 accessListTime2 = block.timestamp + 120;
 
-        impl.addMerkleAccessList(SAMPLE_ROOT_1, accessListTime1);
-        impl.addMerkleAccessList(SAMPLE_ROOT_2, accessListTime2);
+        impl.setTimedMerkleRoot(0, SAMPLE_ROOT_1, accessListTime1);
+        impl.setTimedMerkleRoot(1, SAMPLE_ROOT_2, accessListTime2);
 
-        assertFalse(impl.checkMerkleAccessList(SAMPLE_ADDR_1, SAMPLE_PROOF_1));
-        assertFalse(impl.checkMerkleAccessList(SAMPLE_ADDR_2, SAMPLE_PROOF_2));
+        assertFalse(impl.checkTimedMerkleRoots(SAMPLE_ADDR_1, SAMPLE_PROOF_1));
+        assertFalse(impl.checkTimedMerkleRoots(SAMPLE_ADDR_2, SAMPLE_PROOF_2));
 
         vm.warp(accessListTime1);
-        assertTrue(impl.checkMerkleAccessList(SAMPLE_ADDR_1, SAMPLE_PROOF_1));
-        assertFalse(impl.checkMerkleAccessList(SAMPLE_ADDR_2, SAMPLE_PROOF_2));
+        assertTrue(impl.checkTimedMerkleRoots(SAMPLE_ADDR_1, SAMPLE_PROOF_1));
+        assertFalse(impl.checkTimedMerkleRoots(SAMPLE_ADDR_2, SAMPLE_PROOF_2));
 
         vm.warp(accessListTime2);
-        assertTrue(impl.checkMerkleAccessList(SAMPLE_ADDR_1, SAMPLE_PROOF_1));
-        assertTrue(impl.checkMerkleAccessList(SAMPLE_ADDR_2, SAMPLE_PROOF_2));
+        assertTrue(impl.checkTimedMerkleRoots(SAMPLE_ADDR_1, SAMPLE_PROOF_1));
+        assertTrue(impl.checkTimedMerkleRoots(SAMPLE_ADDR_2, SAMPLE_PROOF_2));
     }
 }
