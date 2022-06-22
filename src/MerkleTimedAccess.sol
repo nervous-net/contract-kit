@@ -1,12 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
+pragma experimental ABIEncoderV2;
 
 import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 
 contract MerkleTimedAccess {
     error AccessDenied();
 
-    event AddAccessList(uint256 index);
+    event AddMerkleAccessList(uint256 index);
+    event UpdateMerkleAccessList(uint256 index);
 
     struct AccessList {
         bytes32 root;
@@ -17,7 +19,7 @@ contract MerkleTimedAccess {
 
     function _addMerkleAccessList(bytes32 root, uint256 startTime) internal {
         _merkleAccessLists.push(AccessList(root, startTime));
-        emit AddAccessList(_merkleAccessLists.length - 1);
+        emit AddMerkleAccessList(_merkleAccessLists.length - 1);
     }
 
     function _updateMerkleAccessList(
@@ -28,6 +30,7 @@ contract MerkleTimedAccess {
         require(index < _merkleAccessLists.length, "Out of bounds");
         _merkleAccessLists[index].root = root;
         _merkleAccessLists[index].startTime = startTime;
+        emit UpdateMerkleAccessList(index);
     }
 
     function _checkMerkleAccessList(address addr, bytes32[] calldata proof)

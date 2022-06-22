@@ -41,11 +41,11 @@ contract WrappableTest is Test {
         impl = new MerkleTimedAccessImpl();
     }
 
-    event AddAccessList(uint256 index);
+    event AddMerkleAccessList(uint256 index);
 
-    function testAddListEmitsEvent() public {
+    function testAdd() public {
         vm.expectEmit(false, false, false, true);
-        emit AddAccessList(0);
+        emit AddMerkleAccessList(0);
         impl.addMerkleAccessList(MOCK_ROOT, 0);
     }
 
@@ -58,8 +58,12 @@ contract WrappableTest is Test {
         impl.updateMerkleAccessList(0, MOCK_ROOT, 0);
     }
 
+    event UpdateMerkleAccessList(uint256 index);
+
     function testAddAndUpdateList() public {
         impl.addMerkleAccessList(MOCK_ROOT, 0);
+        vm.expectEmit(false, false, false, true);
+        emit UpdateMerkleAccessList(0);
         impl.updateMerkleAccessList(0, MOCK_ROOT, 1);
         assertEq(impl.merkleAccessLists(0).startTime, 1);
     }
