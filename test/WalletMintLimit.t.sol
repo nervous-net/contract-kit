@@ -23,7 +23,7 @@ contract WalletMintLimitTest is Test {
     }
 
     function testRevertMintLimitZero() public {
-        vm.expectRevert(abi.encodeWithSignature("ExceedsWalletMintLimit()"));
+        vm.expectRevert("Exceeds wallet mint limit");
         m.mockMint(MOCK_USER, 1);
     }
 
@@ -31,7 +31,7 @@ contract WalletMintLimitTest is Test {
         m.setLimit(3);
         m.mockMint(MOCK_USER, 3);
 
-        vm.expectRevert(abi.encodeWithSignature("ExceedsWalletMintLimit()"));
+        vm.expectRevert("Exceeds wallet mint limit");
         m.mockMint(MOCK_USER, 1);
     }
 }

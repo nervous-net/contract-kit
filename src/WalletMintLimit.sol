@@ -2,8 +2,6 @@
 pragma solidity >0.7.0;
 
 abstract contract WalletMintLimit {
-    error ExceedsWalletMintLimit();
-
     mapping(address => uint256) public walletMints;
     uint256 internal _walletMintLimit;
 
@@ -13,11 +11,8 @@ abstract contract WalletMintLimit {
 
     function _limitWalletMints(address wallet, uint256 count) internal {
         uint256 newCount = walletMints[wallet] + count;
-        if (newCount > _walletMintLimit) {
-            revert ExceedsWalletMintLimit();
-        } else {
-            walletMints[wallet] = newCount;
-        }
+        require(newCount <= _walletMintLimit, "Exceeds wallet mint limit");
+        walletMints[wallet] = newCount;
     }
 
     modifier limitWalletMints(address wallet, uint256 count) {
