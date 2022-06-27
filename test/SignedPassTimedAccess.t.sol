@@ -61,4 +61,24 @@ contract SignedPassTimedAccessTest is Test {
         assertTrue(impl.checkTimedSigners(PREFIX, USER, SIGNED_MESSAGE));
         assertFalse(impl.checkTimedSigners(PREFIX, MOCK_USER, SIGNED_MESSAGE));
     }
+
+    function testRealWorldValue() public {
+        uint256 past = block.timestamp;
+
+        impl.setTimedSigner(
+            0,
+            0x0a161b4884faB9a418709711d22047119a6871B6,
+            past
+        );
+
+        bytes
+            memory m = hex"dd742a9de86f9d2c39accaf6e6babf701f2e8bb8ee9482396bcd496df17456547b22381f6067d8bcb9de6b5f643153d051aa27d4c83b057eade0067d8232dced1c";
+        assertTrue(
+            impl.checkTimedSigners(
+                "NERVOUS",
+                0x02D0b972C33ccB4d50E88454b6a8308E899f47AE,
+                m
+            )
+        );
+    }
 }
