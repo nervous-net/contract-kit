@@ -1,5 +1,5 @@
 {
-  "name": "@nervous-net/nervous-contract-kit",
+  "name": "@nervous-net/contract-kit",
   "license": "MIT",
   "version": "0.1.0",
   "description": "Contract toolkit",
@@ -8,6 +8,6 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nervous-net/nervous-contract-kit.git"
+    "url": "git+https://github.com/nervous-net/contract-kit.git"
   }
 }
