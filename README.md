@@ -16,6 +16,10 @@ Keep track of and limit mints for a given address
 
 Create and manage timed access lists using signed passes
 
+### SignedPass
+
+Library for verifying that an address matches the one signed in a pass.
+
 ### MultiTimedMerkleRoot
 
 Create and manage timed access lists using merkle trees and proofs
