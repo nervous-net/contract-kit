@@ -7,7 +7,7 @@ library MerkleUtil {
     function verifyAddressProof(
         address addr,
         bytes32 root,
-        bytes32[] calldata proof
+        bytes32[] memory proof
     ) internal pure returns (bool) {
         return
             MerkleProof.verify(proof, root, keccak256(abi.encodePacked(addr)));

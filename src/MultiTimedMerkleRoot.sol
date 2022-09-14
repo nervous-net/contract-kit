@@ -28,7 +28,7 @@ contract MultiTimedMerkleRoot {
         _timedMerkleRoots[index].startTime = startTime;
     }
 
-    function _checkTimedMerkleRoots(address addr, bytes32[] calldata proof)
+    function _checkTimedMerkleRoots(address addr, bytes32[] memory proof)
         internal
         view
         returns (bool)
