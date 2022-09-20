@@ -13,6 +13,14 @@ abstract contract ScopedWalletMintLimit {
         scopedWalletMintLimits[scope].limit = _limit;
     }
 
+    function scopedWalletMintLimit(string memory scope)
+        external
+        view
+        returns (uint256)
+    {
+        return scopedWalletMintLimits[scope].limit;
+    }
+
     function _limitScopedWalletMints(
         string memory scope,
         address wallet,
