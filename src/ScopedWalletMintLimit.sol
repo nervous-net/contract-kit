@@ -30,7 +30,7 @@ abstract contract ScopedWalletMintLimit {
             count;
         require(
             newCount <= scopedWalletMintLimits[scope].limit,
-            string.concat("Exceeds wallet mint limit for ", scope)
+            string.concat("Exceeds limit for ", scope)
         );
         scopedWalletMintLimits[scope].walletMints[wallet] = newCount;
     }

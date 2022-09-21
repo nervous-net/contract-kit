@@ -19,7 +19,7 @@ contract ScopedWalletMintLimitTest is Test, ScopedWalletMintLimit {
     }
 
     function testRevertMintLimitZero() public {
-        vm.expectRevert("Exceeds wallet mint limit for test");
+        vm.expectRevert("Exceeds limit for test");
         _limitScopedWalletMints("test", MOCK_USER, 1);
     }
 
@@ -27,7 +27,7 @@ contract ScopedWalletMintLimitTest is Test, ScopedWalletMintLimit {
         _setWalletMintLimit("test", 3);
         _limitScopedWalletMints("test", MOCK_USER, 3);
 
-        vm.expectRevert("Exceeds wallet mint limit for test");
+        vm.expectRevert("Exceeds limit for test");
         _limitScopedWalletMints("test", MOCK_USER, 1);
     }
 
@@ -38,10 +38,10 @@ contract ScopedWalletMintLimitTest is Test, ScopedWalletMintLimit {
         _limitScopedWalletMints("test", MOCK_USER, 3);
         _limitScopedWalletMints("test2", MOCK_USER, 5);
 
-        vm.expectRevert("Exceeds wallet mint limit for test");
+        vm.expectRevert("Exceeds limit for test");
         _limitScopedWalletMints("test", MOCK_USER, 1);
 
-        vm.expectRevert("Exceeds wallet mint limit for test2");
+        vm.expectRevert("Exceeds limit for test2");
         _limitScopedWalletMints("test2", MOCK_USER, 1);
     }
 }
