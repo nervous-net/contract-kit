@@ -7,18 +7,10 @@ abstract contract ScopedWalletMintLimit {
         mapping(address => uint256) walletMints;
     }
 
-    mapping(string => ScopedLimit) public scopedWalletMintLimits;
+    mapping(string => ScopedLimit) internal _scopedWalletMintLimits;
 
     function _setWalletMintLimit(string memory scope, uint256 _limit) internal {
-        scopedWalletMintLimits[scope].limit = _limit;
-    }
-
-    function scopedWalletMintLimit(string memory scope)
-        external
-        view
-        returns (uint256)
-    {
-        return scopedWalletMintLimits[scope].limit;
+        _scopedWalletMintLimits[scope].limit = _limit;
     }
 
     function _limitScopedWalletMints(
@@ -26,13 +18,13 @@ abstract contract ScopedWalletMintLimit {
         address wallet,
         uint256 count
     ) internal {
-        uint256 newCount = scopedWalletMintLimits[scope].walletMints[wallet] +
+        uint256 newCount = _scopedWalletMintLimits[scope].walletMints[wallet] +
             count;
         require(
-            newCount <= scopedWalletMintLimits[scope].limit,
+            newCount <= _scopedWalletMintLimits[scope].limit,
             string.concat("Exceeds limit for ", scope)
         );
-        scopedWalletMintLimits[scope].walletMints[wallet] = newCount;
+        _scopedWalletMintLimits[scope].walletMints[wallet] = newCount;
     }
 
     modifier limitScopedWalletMints(

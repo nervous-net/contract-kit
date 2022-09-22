@@ -10,12 +10,12 @@ contract ScopedWalletMintLimitTest is Test, ScopedWalletMintLimit {
     function setUp() public {}
 
     function testLimitZero() public {
-        assertEq(scopedWalletMintLimits["test"].limit, 0);
+        assertEq(_scopedWalletMintLimits["test"].limit, 0);
     }
 
     function testSetLimit() public {
         _setWalletMintLimit("test", 10);
-        assertEq(scopedWalletMintLimits["test"].limit, 10);
+        assertEq(_scopedWalletMintLimits["test"].limit, 10);
     }
 
     function testRevertMintLimitZero() public {
